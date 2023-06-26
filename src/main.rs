@@ -1,5 +1,6 @@
 mod constants;
 mod game;
+mod grid_draw;
 
 use game::TetrisGame;
 
