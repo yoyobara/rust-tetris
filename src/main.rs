@@ -1,7 +1,7 @@
 mod constants;
 
 use sdl2::{
-    video::Window, render::Canvas, Sdl, EventPump, event::Event
+    video::Window, render::Canvas, Sdl, EventPump, event::Event, rect::Rect, pixels::Color
 };
 
 struct TetrisGame {
@@ -29,10 +29,6 @@ impl TetrisGame {
         })
     }
 
-    /* draw the screen */
-    fn draw(&mut self) {
-    }
-
     /* handle events */
     fn event_loop(&mut self, pump: &mut EventPump) {
         for event in pump.poll_iter() {
@@ -46,8 +42,19 @@ impl TetrisGame {
     }
 
     /* update stuff in the game, called every tick */
-    fn update(&self) {
+    fn update(&self) -> Result<(), String> {
+        Ok(())
+    }
 
+    /* draw the screen */
+    fn draw(&mut self) -> Result<(), String> {
+
+        self.canvas.set_draw_color(Color::BLUE);
+        self.canvas.clear();
+
+        self.canvas.set_draw_color(Color::YELLOW);
+        self.canvas.fill_rect(Rect::new(100, 100, 600, 600))?;
+        Ok(())
     }
 
     fn mainloop(&mut self) -> Result<(), String> {
@@ -61,9 +68,9 @@ impl TetrisGame {
         while self.running {
             self.event_loop(&mut event_pump);
 
-            self.update();
+            self.update()?;
 
-            self.draw();
+            self.draw()?;
             self.canvas.present();
 
             // limit frame rate
