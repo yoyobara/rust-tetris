@@ -49,12 +49,12 @@ impl TetrisGame {
     /* draw the screen */
     fn draw(&mut self) -> Result<(), String> {
 
-        self.grid.draw_outline(&mut self.canvas)?;
-
         for i in 0..4 {
             // self.grid.fill_square((0, i), constants::PIECE_COLOR);
             self.grid.fill_square(&mut self.canvas, (0, i), constants::PIECE_COLOR)?;
         }
+
+        self.grid.draw_borders(&mut self.canvas)?;
 
         Ok(())
     }

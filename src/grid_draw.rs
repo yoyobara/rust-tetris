@@ -4,7 +4,8 @@ use sdl2::{
 
 pub struct Grid {
     grid_rect: Rect,
-    current_square_rect: Rect
+    current_square_rect: Rect,
+    grid_dims: (u32, u32)
 }
 
 impl Grid {
@@ -19,7 +20,7 @@ impl Grid {
         let rect = Rect::new(rect.0, rect.1, rect.2, rect.3);
         let square_rect_dims : (u32, u32) = (rect.width() / grid_dims.0, rect.height() / grid_dims.1);
 
-        Self { grid_rect: rect, current_square_rect: Rect::new(0, 0, square_rect_dims.0, square_rect_dims.1)}
+        Self { grid_rect: rect, current_square_rect: Rect::new(0, 0, square_rect_dims.0, square_rect_dims.1), grid_dims: grid_dims}
     }
 
     fn calculate_position(&self, sq: (i32, i32)) -> (i32, i32){
@@ -41,9 +42,24 @@ impl Grid {
         Ok(())
     }
 
-    pub fn draw_outline(&mut self, canvas: &mut Canvas<Window>) -> Result<(), String> {
-        canvas.set_draw_color(Color::GRAY);
-        canvas.draw_rect(self.grid_rect)?;
+    pub fn draw_borders(&mut self, canvas: &mut Canvas<Window>) -> Result<(), String> {
+
+        canvas.set_draw_color(Color::GREY);
+
+        // vertical
+        for i in 0..=self.grid_dims.0{
+            let line_x = self.grid_rect.x + (i * self.current_square_rect.width()) as i32;
+            canvas.draw_line((line_x, self.grid_rect.top()), (line_x, self.grid_rect.bottom()))?;
+        }
+
+        // horizontal
+        
+        for i in 0..=self.grid_dims.1 {
+            let line_y = self.grid_rect.y + (i * self.current_square_rect.height()) as i32;
+            canvas.draw_line((self.grid_rect.left(), line_y), (self.grid_rect.right(), line_y))?;
+        }
         Ok(())
+
+
     }
 }
