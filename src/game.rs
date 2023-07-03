@@ -1,5 +1,5 @@
 use sdl2::{
-    video::Window, render::Canvas, Sdl, EventPump, event::Event
+    video::{Window, WindowContext}, render::{Canvas, TextureCreator, Texture}, Sdl, EventPump, event::Event, image::LoadTexture
 };
 use crate::{constants, grid_draw::Grid};
 
@@ -7,7 +7,9 @@ pub struct TetrisGame {
     sdl_context: Sdl,
     canvas: Canvas<Window>,
     grid: Grid,
-    running: bool
+    running: bool,
+    creator: TextureCreator<WindowContext>,
+    bg_texture: Texture
 }
 
 impl TetrisGame {
@@ -19,13 +21,18 @@ impl TetrisGame {
         let win = video_ctx.window(constants::WINDOW_TITLE, constants::WINDOW_SIZE.0, constants::WINDOW_SIZE.1).position_centered().build().unwrap();
         let canvas = win.into_canvas().build().map_err(|_| "canvas creation failed")?;
 
-        let grid = Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS);
+        let creator = canvas.texture_creator();
+        let bg_texture = creator.load_texture("./assests/img/tetris_bg.png").map_err(|_| "cant load image")?;
 
+        let grid = Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS);
+        
         Ok( TetrisGame{ 
             sdl_context: ctx,
             canvas: canvas,
             grid: grid,
-            running: false
+            running: false,
+            creator: creator,
+            bg_texture: bg_texture
         })
     }
 
@@ -48,6 +55,9 @@ impl TetrisGame {
 
     /* draw the screen */
     fn draw(&mut self) -> Result<(), String> {
+
+        // draw background texture
+        self.canvas.copy(&self.bg_texture, None, None)?;
 
         for i in 0..4 {
             // self.grid.fill_square((0, i), constants::PIECE_COLOR);
