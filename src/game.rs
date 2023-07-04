@@ -21,11 +21,9 @@ impl TetrisGame {
         let win = video_ctx.window(constants::WINDOW_TITLE, constants::WINDOW_SIZE.0, constants::WINDOW_SIZE.1).position_centered().build().unwrap();
         let canvas = win.into_canvas().build().map_err(|_| "canvas creation failed")?;
 
-        let grid = Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS);
-        
         Ok( TetrisGame{ 
             sdl_context: ctx,
-            grid: grid,
+            grid: Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS),
             running: false,
             texture_manager: TexturesManager::new(&canvas.texture_creator())?,
             canvas: canvas
