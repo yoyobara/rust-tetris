@@ -8,7 +8,6 @@ pub struct TetrisGame {
     canvas: Canvas<Window>,
     grid: Grid,
     running: bool,
-    creator: TextureCreator<WindowContext>,
     bg_texture: Texture
 }
 
@@ -31,7 +30,6 @@ impl TetrisGame {
             canvas: canvas,
             grid: grid,
             running: false,
-            creator: creator,
             bg_texture: bg_texture
         })
     }
