@@ -3,12 +3,26 @@ use sdl2::{
 };
 use crate::{constants, grid_draw::Grid};
 
+struct TexturesManager {
+    background: Texture,
+    pieces: Texture,
+}
+
+impl TexturesManager {
+    fn new(creator: &TextureCreator<WindowContext>) -> Result<Self, String> {
+        Ok(TexturesManager {
+            background: creator.load_texture("./assests/img/tetris_bg.png")?,
+            pieces: creator.load_texture("./assests/img/pieces.png")?
+        })
+    }
+}
+
 pub struct TetrisGame {
     sdl_context: Sdl,
     canvas: Canvas<Window>,
     grid: Grid,
     running: bool,
-    bg_texture: Texture
+    texture_manager: TexturesManager
 }
 
 impl TetrisGame {
@@ -20,17 +34,14 @@ impl TetrisGame {
         let win = video_ctx.window(constants::WINDOW_TITLE, constants::WINDOW_SIZE.0, constants::WINDOW_SIZE.1).position_centered().build().unwrap();
         let canvas = win.into_canvas().build().map_err(|_| "canvas creation failed")?;
 
-        let creator = canvas.texture_creator();
-        let bg_texture = creator.load_texture("./assests/img/tetris_bg.png").map_err(|_| "cant load image")?;
-
         let grid = Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS);
         
         Ok( TetrisGame{ 
             sdl_context: ctx,
-            canvas: canvas,
             grid: grid,
             running: false,
-            bg_texture: bg_texture
+            texture_manager: TexturesManager::new(&canvas.texture_creator())?,
+            canvas: canvas
         })
     }
 
@@ -55,12 +66,7 @@ impl TetrisGame {
     fn draw(&mut self) -> Result<(), String> {
 
         // draw background texture
-        self.canvas.copy(&self.bg_texture, None, None)?;
-
-        for i in 0..4 {
-            // self.grid.fill_square((0, i), constants::PIECE_COLOR);
-            self.grid.fill_square(&mut self.canvas, (0, i), constants::PIECE_COLOR)?;
-        }
+        self.canvas.copy(&self.texture_manager.background, None, None)?;
 
         self.grid.draw_borders(&mut self.canvas)?;
 
