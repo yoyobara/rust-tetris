@@ -1,21 +1,8 @@
 use sdl2::{
-    video::{Window, WindowContext}, render::{Canvas, TextureCreator, Texture}, Sdl, EventPump, event::Event, image::LoadTexture
+    video::Window, render::Canvas, Sdl, EventPump, event::Event
 };
-use crate::{constants, grid_draw::Grid};
 
-struct TexturesManager {
-    background: Texture,
-    pieces: Texture,
-}
-
-impl TexturesManager {
-    fn new(creator: &TextureCreator<WindowContext>) -> Result<Self, String> {
-        Ok(TexturesManager {
-            background: creator.load_texture("./assests/img/tetris_bg.png")?,
-            pieces: creator.load_texture("./assests/img/pieces.png")?
-        })
-    }
-}
+use crate::{constants, grid_draw::Grid, textures_manager::TexturesManager};
 
 pub struct TetrisGame {
     sdl_context: Sdl,

@@ -1,6 +1,7 @@
 mod constants;
 mod game;
 mod grid_draw;
+mod textures_manager;
 
 use game::TetrisGame;
 
