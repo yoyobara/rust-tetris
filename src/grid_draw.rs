@@ -2,6 +2,8 @@ use sdl2::{
     rect::Rect, render::Canvas, video::Window, pixels::Color
 };
 
+use crate::{piece_type::PieceType, textures_manager::TexturesManager};
+
 pub struct Grid {
     grid_rect: Rect,
     current_square_rect: Rect,
@@ -30,18 +32,17 @@ impl Grid {
         )
     }
 
-    pub fn fill_square(&mut self, canvas: &mut Canvas<Window>, sq: (i32, i32), color: Color) -> Result<(), String> {
-        canvas.set_draw_color(color);
-
+    pub fn fill_square(&mut self, canvas: &mut Canvas<Window>, texture_mng: &TexturesManager, sq: (i32, i32), piece_type: PieceType) -> Result<(), String> {
         let (x, y) = self.calculate_position(sq);
+
         self.current_square_rect.set_x(x);
         self.current_square_rect.set_y(y);
 
-        canvas.fill_rect(self.current_square_rect)?;
+        canvas.copy(&texture_mng.pieces, Rect::new(piece_type.index() * 30, 0, 30, 30), self.current_square_rect)?;
 
         Ok(())
     }
-
+    
     pub fn draw_borders(&mut self, canvas: &mut Canvas<Window>) -> Result<(), String> {
 
         canvas.set_draw_color(Color::GREY);

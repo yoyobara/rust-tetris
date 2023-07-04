@@ -1,8 +1,8 @@
 use sdl2::{
-    video::Window, render::Canvas, Sdl, EventPump, event::Event
+    video::Window, render::Canvas, Sdl, EventPump, event::Event, rect::Rect
 };
 
-use crate::{constants, grid_draw::Grid, textures_manager::TexturesManager};
+use crate::{constants, grid_draw::Grid, textures_manager::TexturesManager, piece_type::PieceType};
 
 pub struct TetrisGame {
     sdl_context: Sdl,
@@ -11,6 +11,7 @@ pub struct TetrisGame {
     running: bool,
     texture_manager: TexturesManager
 }
+
 
 impl TetrisGame {
     
@@ -52,6 +53,10 @@ impl TetrisGame {
 
         // draw background texture
         self.canvas.copy(&self.texture_manager.background, None, None)?;
+
+        // draw pieces
+        let t = PieceType::O;
+        self.grid.fill_square(&mut self.canvas, &self.texture_manager, (0, 1), t)?;
 
         self.grid.draw_borders(&mut self.canvas)?;
 
