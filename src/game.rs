@@ -7,9 +7,11 @@ use crate::{constants, grid_draw::Grid, textures_manager::TexturesManager, piece
 pub struct TetrisGame {
     sdl_context: Sdl,
     canvas: Canvas<Window>,
-    grid: Grid,
+    grid_drawer: Grid,
     running: bool,
-    texture_manager: TexturesManager
+    texture_manager: TexturesManager,
+    grid: [[Option<PieceType>; 10] ; 20],
+    current_piece: (PieceType, (u32, u32))
 }
 
 
@@ -22,12 +24,17 @@ impl TetrisGame {
         let win = video_ctx.window(constants::WINDOW_TITLE, constants::WINDOW_SIZE.0, constants::WINDOW_SIZE.1).position_centered().build().unwrap();
         let canvas = win.into_canvas().build().map_err(|_| "canvas creation failed")?;
 
+        // TODO should be random
+        let first_piece = PieceType::T;
+
         Ok( TetrisGame{ 
             sdl_context: ctx,
-            grid: Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS),
+            grid_drawer: Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS),
             running: false,
             texture_manager: TexturesManager::new(&canvas.texture_creator())?,
-            canvas: canvas
+            canvas: canvas,
+            grid: Default::default(),
+            current_piece: (first_piece, (18, 4))
         })
     }
 
@@ -43,6 +50,23 @@ impl TetrisGame {
         }
     }
 
+    // finds whole rows in the board and fixes it.
+    fn board_fix(&mut self) {
+        for i in 0..20 {
+
+            if Self::is_full_row(&self.grid[i]) {
+                for j in (i+1)..20 {
+                    self.grid[j - 1] = self.grid[j];
+                }
+            }
+
+        }
+    }
+
+    fn is_full_row(row: &[Option<PieceType> ; 10]) -> bool {
+        row.iter().all(|v| v.is_some() )
+    }
+
     /* update stuff in the game, called every tick */
     fn update(&self) -> Result<(), String> {
         Ok(())
@@ -56,9 +80,9 @@ impl TetrisGame {
 
         // draw pieces
         let t = PieceType::O;
-        self.grid.fill_square(&mut self.canvas, &self.texture_manager, (0, 1), t)?;
+        self.grid_drawer.fill_square(&mut self.canvas, &self.texture_manager, (0, 1), t)?;
 
-        self.grid.draw_borders(&mut self.canvas)?;
+        self.grid_drawer.draw_borders(&mut self.canvas)?;
 
         Ok(())
     }
