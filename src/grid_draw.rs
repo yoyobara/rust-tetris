@@ -4,13 +4,13 @@ use sdl2::{
 
 use crate::{piece_type::PieceType, textures_manager::TexturesManager};
 
-pub struct Grid {
+pub struct GridDraw {
     grid_rect: Rect,
     current_square_rect: Rect,
     grid_dims: (u32, u32)
 }
 
-impl Grid {
+impl GridDraw {
 
     /*
      * create a new grid.

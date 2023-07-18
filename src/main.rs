@@ -3,6 +3,7 @@ mod game;
 mod grid_draw;
 mod textures_manager;
 mod piece_type;
+mod tetris_grid;
 
 use game::TetrisGame;
 

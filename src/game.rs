@@ -2,15 +2,15 @@ use sdl2::{
     video::Window, render::Canvas, Sdl, EventPump, event::Event, rect::Rect
 };
 
-use crate::{constants, grid_draw::Grid, textures_manager::TexturesManager, piece_type::PieceType};
+use crate::{constants, grid_draw::GridDraw, textures_manager::TexturesManager, piece_type::PieceType, tetris_grid::Grid};
 
 pub struct TetrisGame {
     sdl_context: Sdl,
     canvas: Canvas<Window>,
-    grid_drawer: Grid,
+    grid_drawer: GridDraw,
     running: bool,
     texture_manager: TexturesManager,
-    grid: [[Option<PieceType>; 10] ; 20],
+    grid: Grid,
     current_piece: (PieceType, (u32, u32))
 }
 
@@ -29,7 +29,7 @@ impl TetrisGame {
 
         Ok( TetrisGame{ 
             sdl_context: ctx,
-            grid_drawer: Grid::new(constants::GRID_RECT, constants::GRID_DIMENSIONS),
+            grid_drawer: GridDraw::new(constants::GRID_RECT, constants::GRID_DIMENSIONS),
             running: false,
             texture_manager: TexturesManager::new(&canvas.texture_creator())?,
             canvas: canvas,
@@ -48,23 +48,6 @@ impl TetrisGame {
                 _ => {}
             }
         }
-    }
-
-    // finds whole rows in the board and fixes it.
-    fn board_fix(&mut self) {
-        for i in 0..20 {
-
-            if Self::is_full_row(&self.grid[i]) {
-                for j in (i+1)..20 {
-                    self.grid[j - 1] = self.grid[j];
-                }
-            }
-
-        }
-    }
-
-    fn is_full_row(row: &[Option<PieceType> ; 10]) -> bool {
-        row.iter().all(|v| v.is_some() )
     }
 
     /* update stuff in the game, called every tick */

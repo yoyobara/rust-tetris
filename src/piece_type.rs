@@ -11,6 +11,10 @@ pub enum PieceType {
     O
 }
 
+trait Piece {
+    
+}
+
 impl PieceType {
     pub fn index(&self) -> i32 {
         return *self as i32
