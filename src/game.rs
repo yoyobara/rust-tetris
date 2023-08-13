@@ -1,8 +1,8 @@
 use sdl2::{
-    video::Window, render::Canvas, Sdl, EventPump, event::Event, rect::Rect
+    video::Window, render::Canvas, Sdl, EventPump, event::Event
 };
 
-use crate::{constants, grid_draw::GridDraw, textures_manager::TexturesManager, piece_type::PieceType, tetris_grid::Grid};
+use crate::{constants, grid_draw::GridDraw, textures_manager::TexturesManager, tetris_grid::Grid};
 
 pub struct TetrisGame {
     sdl_context: Sdl,
@@ -11,7 +11,7 @@ pub struct TetrisGame {
     running: bool,
     texture_manager: TexturesManager,
     grid: Grid,
-    current_piece: (PieceType, (u32, u32))
+    current_piece: (Piece, (i32, i32))
 }
 
 
@@ -34,7 +34,7 @@ impl TetrisGame {
             texture_manager: TexturesManager::new(&canvas.texture_creator())?,
             canvas: canvas,
             grid: Default::default(),
-            current_piece: (first_piece, (18, 4))
+            current_piece: (first_piece, constants::STARTING_PIECE_POSITION)
         })
     }
 
@@ -61,13 +61,16 @@ impl TetrisGame {
         // draw background texture
         self.canvas.copy(&self.texture_manager.background, None, None)?;
 
-        // draw pieces
-        let t = PieceType::O;
-        self.grid_drawer.fill_square(&mut self.canvas, &self.texture_manager, (0, 1), t)?;
+        self.draw_pieces();
 
+        // draw grid borders
         self.grid_drawer.draw_borders(&mut self.canvas)?;
 
         Ok(())
+    }
+
+    /* draw the pieces */
+    fn draw_pieces(&mut self) {
     }
 
     pub fn mainloop(&mut self) -> Result<(), String> {
