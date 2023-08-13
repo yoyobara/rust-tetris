@@ -1,0 +1,2 @@
+
+fn subtract_spots()
